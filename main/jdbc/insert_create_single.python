@@ -1,0 +1,52 @@
+import sqlite3
+import random
+import time
+
+# SQLite数据库文件路径
+database_path = '/home/sdc/campuslite/runntime/data/databases/authority.db'
+
+# 表名称
+table_name = 't_passauth_person_device_create'
+
+# 要导入的数据行数
+num_rows = 920000
+
+# 连接到数据库
+conn = sqlite3.connect(database_path)
+cursor = conn.cursor()
+
+# 生成并插入数据
+start_time = time.time()
+
+for i in range(1, num_rows + 1):
+    c1 = '127F008L00900119'
+    c2 = '1208818604523388928'
+	c3 = 420
+	c4 = '[{"ruleId":3,"count":1}]'
+	c5 = 1708248040425
+	c6 = 2
+	c7 = 1
+	c8 = 'pbb'
+	c9 = 'pbb'
+
+    insert_query = '''
+        INSERT INTO {} (device_id,person_id,customer_id,rules,sended,type,person_type,creator,updater) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    '''.format(table_name)
+
+    cursor.execute(insert_query, (c1, c2,c3,c4,c5,c6,c7,c8,c9))
+    # 添加其他列的数据...
+
+    # 每隔一定数量的数据提交一次
+    if i % 10000 == 0:
+        conn.commit()
+
+# 提交剩余的数据
+conn.commit()
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f'Data import completed in {elapsed_time:.2f} seconds.')
+
+# 关闭连接
+cursor.close()
+conn.close()
